@@ -1,157 +1,68 @@
-# 🔋 NEXUS ENA - AWS電力価格分析基盤
-
-[![AWS](https://img.shields.io/badge/AWS-Cloud-orange.svg)](https://aws.amazon.com/)
-[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org/)
-[![Terraform](https://img.shields.io/badge/Terraform-Infrastructure-purple.svg)](https://terraform.io/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-
-**エネルギー市場向けの包括的なリスク分析・価格予測プラットフォーム**
-
-## 🎯 プロジェクト概要
-
-NEXUS ENAは、電力・エネルギー市場における価格分析、リスク評価、予測モデリングを行うAWSクラウドベースの分析基盤です。
-
-### 🌟 主要機能
-- ⚡ **リアルタイム価格分析** - 電力先物・現物価格の監視
-- 📊 **VaRリスク計算** - モンテカルロシミュレーション
-- 📈 **フォワードカーブ構築** - 将来価格予測モデル
-- 🔄 **季節性分析** - 需要パターン・天候影響分析
-- 🚨 **アラートシステム** - リスク閾値監視・通知
-
-## 🏗️ アーキテクチャ
-
-```
-┌─────────────────┐    ┌──────────────┐    ┌─────────────────┐
-│   Data Sources  │────│  AWS Lambda  │────│   TimeStream    │
-│  (Market APIs)  │    │ (ETL Pipeline)│    │ (Time Series)   │
-└─────────────────┘    └──────────────┘    └─────────────────┘
-                              │
-                              ▼
-┌─────────────────┐    ┌──────────────┐    ┌─────────────────┐
-│   SageMaker     │────│  API Gateway │────│   QuickSight    │
-│ (ML Analytics)  │    │  (REST API)  │    │  (Dashboard)    │
-└─────────────────┘    └──────────────┘    └─────────────────┘
-```
-
-## 📋 実装スケジュール
-
-### 🗓️ Month 1: 基盤構築
-- **Week 1-2**: AWS基盤セットアップ・データパイプライン
-- **Week 3-4**: SageMaker環境・基本分析機能
-
-### 🗓️ Month 2: 高度な分析機能
-- **Week 1-2**: フォワードカーブ・季節性モデリング
-- **Week 3-4**: 分散計算・リアルタイムアラート
-
-### 🗓️ Month 3: ダッシュボード・運用
-- **Week 1-2**: 本格ダッシュボード・レポート機能
-- **Week 3-4**: 本番デプロイ・運用体制構築
-
-## 💰 コスト見積もり
-
-| 環境 | 月額コスト | 主要サービス |
-|------|------------|--------------|
-| **開発環境** | ~$549 | S3, TimeStream, SageMaker |
-| **本番環境** | ~$3,645 | Full Stack + High Availability |
-| **年間合計** | ~$37,548 | 開発2ヶ月 + 本番10ヶ月 |
-
-## 🚀 クイックスタート
-
-### 1. 環境準備
-```bash
-# リポジトリクローン
-git clone https://github.com/hozaki45/NEXUS_ENA.git
-cd NEXUS_ENA
-
-# AWS CLI設定
-aws configure
-```
-
-### 2. インフラデプロイ
-```bash
-# Terraform初期化
-terraform init
-
-# 開発環境デプロイ
-terraform plan -var-file="environments/dev.tfvars"
-terraform apply -var-file="environments/dev.tfvars"
-```
-
-### 3. アプリケーション起動
-```bash
-# 依存関係インストール
-pip install -r requirements.txt
-
-# サンプルデータロード
-python scripts/load_sample_data.py
-
-# 分析開始
-jupyter notebook notebooks/energy_analysis.ipynb
-```
-
-## 📁 プロジェクト構造
-
-```
-NEXUS_ENA/
-├── 📋 aws_implementation_guide.md  # 詳細実装ガイド
-├── 🏗️ terraform/                  # インフラコード
-│   ├── modules/
-│   ├── environments/
-│   └── main.tf
-├── 🐍 src/                        # アプリケーションコード
-│   ├── data_pipeline/
-│   ├── analytics/
-│   ├── api/
-│   └── dashboard/
-├── 📊 notebooks/                  # Jupyter分析ノートブック
-├── 🧪 tests/                      # テストコード
-├── 📜 scripts/                    # デプロイ・運用スクリプト
-└── 📖 docs/                       # ドキュメント
-```
-
-## 🛡️ セキュリティ
-
-- **暗号化**: 保存時・通信時の暗号化 (AES-256, TLS 1.2+)
-- **アクセス制御**: IAMロールベースアクセス制御
-- **監査**: CloudTrailによる全操作ログ
-- **コンプライアンス**: 金融規制要件対応
-
-## 📊 技術スタック
-
-| レイヤー | 技術 | 用途 |
-|----------|------|------|
-| **Data Lake** | Amazon S3 | 生データ・バックアップ保存 |
-| **Time Series** | Amazon TimeStream | 価格・時系列データ |
-| **Analytics** | Amazon SageMaker | ML・統計分析 |
-| **Compute** | AWS Lambda + Batch | データ処理・計算 |
-| **API** | API Gateway | RESTful API |
-| **Visualization** | Amazon QuickSight | BI・ダッシュボード |
-| **Infrastructure** | Terraform | IaC |
-| **Monitoring** | CloudWatch + SNS | 監視・アラート |
-
-## 🤝 コントリビューション
-
-1. Fork this repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
-
-## 📄 ライセンス
-
-このプロジェクトはMITライセンスの下で公開されています。
-
-## 📞 サポート
-
-- **Issues**: [GitHub Issues](https://github.com/hozaki45/NEXUS_ENA/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/hozaki45/NEXUS_ENA/discussions)
-
----
+# NEXUS - Energy Nexus Analytics
 
 <div align="center">
 
-**🔋 NEXUS ENA** - Empowering Energy Analytics with AWS
+![NEXUS Logo](https://img.shields.io/badge/NEXUS-Energy%20Analytics-blue?style=for-the-badge&logo=lightning)
 
-*Powered by AWS Cloud & Machine Learning*
+**電力市場データの次世代分析プラットフォーム**
+
+[![AWS](https://img.shields.io/badge/AWS-Cloud%20Native-orange?style=flat-square&logo=amazon-aws)](https://aws.amazon.com/)
+[![Python](https://img.shields.io/badge/Python-3.9+-blue?style=flat-square&logo=python)](https://python.org/)
+[![React](https://img.shields.io/badge/React-18+-61DAFB?style=flat-square&logo=react)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-4.9+-3178C6?style=flat-square&logo=typescript)](https://typescriptlang.org/)
+[![Claude](https://img.shields.io/badge/Claude-AI%20Powered-purple?style=flat-square)](https://anthropic.com/)
 
 </div>
+
+## 🎯 プロジェクト概要
+
+NEXUSは電力市場における原料取引データ（現物・先物）を自動収集・分析し、Claude AIを活用したニュース分析とレポート生成により、エネルギーアナリストの戦略立案を支援する次世代分析プラットフォームです。
+
+### ✨ 主要特徴
+
+- 🔄 **週1回の効率的分析**: リアルタイム処理を排除した低コスト・高精度分析サイクル
+- 💰 **超低コスト設計**: 月額$20以下のAWSサーバーレス構成
+- 🤖 **AI統合分析**: Claude APIによるニュース分析・レポート自動生成
+- 📊 **高度統計分析**: 主成分分析、フーリエ解析、季節性分析、モンテカルロシミュレーション
+- 🚀 **完全サーバーレス**: AWS基盤による自動スケーリング・高可用性
+- 🔐 **エンタープライズセキュリティ**: AWS Cognito認証、WAF防御、暗号化通信
+
+## 🏗️ システムアーキテクチャ
+
+```mermaid
+graph TB
+    subgraph "外部データソース"
+        LSEG[🔌 LSEG API<br/>5資産データ]
+        NEWS[📰 News APIs<br/>Reuters, Bloomberg]
+        PUBLIC[🌐 Public APIs<br/>経済指標・気象データ]
+    end
+
+    subgraph "データ収集層（自動・日次）"
+        LAMBDA1[⚡ Lambda<br/>データ収集]
+        S3_RAW[📦 S3 Standard<br/>Raw Data]
+        S3_PROCESSED[📊 S3 IA<br/>分析用Parquet]
+        S3_ARCHIVE[🗄️ S3 Glacier<br/>長期アーカイブ]
+    end
+
+    subgraph "分析層（週1回・オンデマンド）"
+        ECS[🚀 ECS Fargate<br/>統計分析<br/>15-30分実行]
+        CLAUDE[🤖 Claude API<br/>ニュース分析<br/>レポート生成]
+    end
+
+    subgraph "表示・配信層"
+        ATHENA[🔍 Athena<br/>高速クエリ]
+        REACT[💻 React Dashboard<br/>インタラクティブ表示]
+        PDF[📄 PDFレポート<br/>プロ仕様自動生成]
+    end
+
+    LSEG --> LAMBDA1
+    NEWS --> LAMBDA1
+    PUBLIC --> LAMBDA1
+    LAMBDA1 --> S3_RAW
+    S3_RAW --> S3_PROCESSED
+    S3_PROCESSED --> S3_ARCHIVE
+    S3_PROCESSED --> ECS
+    NEWS --> CLAUDE
+    ECS --> ATHENA
+    ATHENA --> REACT
+    CLAUDE --> PDF

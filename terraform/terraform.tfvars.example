@@ -1,0 +1,91 @@
+# NEXUS_ENA Terraform Configuration Example
+# Copy this file to terraform.tfvars and update with your actual values
+
+# Basic Configuration
+aws_region  = "us-east-1"
+environment = "prod"
+
+# Required API Keys (must be provided)
+claude_api_key = "your-claude-api-key-here"
+lseg_api_key   = "your-lseg-api-key-here"
+
+# Optional API Keys (leave empty if not using)
+reuters_api_key   = ""
+bloomberg_api_key = ""
+weather_api_key   = "your-weather-api-key-here"  # OpenWeatherMap or similar
+economic_api_key  = "your-economic-api-key-here" # FRED, Alpha Vantage, etc.
+
+# Cost Management
+cost_threshold = 18  # Alert when monthly cost exceeds $18
+
+# Resource Configuration
+data_retention_days     = 30   # Days to keep data in S3 Standard
+lambda_memory_size      = 512  # MB
+lambda_timeout         = 300  # seconds (5 minutes)
+ecs_cpu               = 256   # CPU units
+ecs_memory            = 512   # MB
+cloudwatch_log_retention = 14   # days
+
+# Security Settings
+enable_waf                 = true
+enable_cloudtrail         = true
+enable_vpc_flow_logs      = false  # Cost optimization
+notification_email        = "alerts@yourcompany.com"
+allowed_cidr_blocks       = ["0.0.0.0/0"]  # Restrict in production
+
+# Backup and DR
+backup_retention_days      = 35
+enable_cross_region_backup = false  # Enable for production
+backup_region             = "us-west-2"
+
+# Performance and Monitoring
+enable_detailed_monitoring = false  # Cost optimization
+api_rate_limit            = 100    # requests per minute
+api_burst_limit           = 200
+
+# Data Sources Configuration
+data_sources = {
+  lseg = {
+    enabled    = true
+    rate_limit = 100
+    timeout    = 30
+  }
+  reuters = {
+    enabled    = false  # Enable if you have API key
+    rate_limit = 50
+    timeout    = 30
+  }
+  bloomberg = {
+    enabled    = false  # Enable if you have API key
+    rate_limit = 50
+    timeout    = 30
+  }
+  weather = {
+    enabled    = true
+    rate_limit = 1000
+    timeout    = 10
+  }
+  economic = {
+    enabled    = true
+    rate_limit = 100
+    timeout    = 30
+  }
+}
+
+# Scheduling
+analysis_schedule  = "cron(0 2 ? * SUN *)"  # Every Sunday at 2 AM UTC
+collection_schedule = "cron(0 6 * * ? *)"   # Every day at 6 AM UTC
+
+# Advanced Settings
+enable_spot_pricing      = false  # Use Spot pricing for ECS (less reliable)
+database_backup_window   = "03:00-04:00"
+maintenance_window       = "sun:04:00-sun:05:00"
+
+# Additional Tags
+tags = {
+  Owner       = "DataEngineering"
+  Project     = "NEXUS_ENA"
+  Environment = "Production"
+  CostCenter  = "EnergyAnalytics"
+  Compliance  = "SOC2"
+}

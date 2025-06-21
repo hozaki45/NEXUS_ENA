@@ -1,6 +1,10 @@
 # NEXUS_ENA - Energy Nexus Analytics Platform
 
-> 🚀 **Enterprise-grade energy market data analysis platform built on AWS Serverless Architecture**
+<div align="center">
+
+![NEXUS Logo](https://img.shields.io/badge/NEXUS_ENA-Energy%20Analytics-blue?style=for-the-badge&logo=lightning)
+
+**🚀 Enterprise-grade energy market data analysis platform built on AWS Serverless Architecture**
 
 [![AWS](https://img.shields.io/badge/AWS-Serverless-orange.svg)](https://aws.amazon.com/)
 [![React](https://img.shields.io/badge/React-18.x-blue.svg)](https://reactjs.org/)
@@ -9,9 +13,15 @@
 [![Python](https://img.shields.io/badge/Python-3.9+-green.svg)](https://www.python.org/)
 [![Claude AI](https://img.shields.io/badge/Claude-AI%20Powered-blueviolet.svg)](https://www.anthropic.com/)
 
+**電力市場データの次世代分析プラットフォーム**
+
+</div>
+
 ## 🌟 Overview
 
 NEXUS_ENA is a next-generation energy market data analysis platform that combines real-time data collection, AI-powered analysis, and intuitive visualization. Built entirely on AWS serverless technologies, it delivers enterprise-grade capabilities while operating under strict cost constraints ($20/month).
+
+電力市場における原料取引データ（現物・先物）を自動収集・分析し、Claude AIを活用したニュース分析とレポート生成により、エネルギーアナリストの戦略立案を支援します。
 
 ### ✨ Key Features
 
@@ -21,20 +31,50 @@ NEXUS_ENA is a next-generation energy market data analysis platform that combine
 - 🛡️ **Enterprise Security** - WAF protection, encryption, and audit logging
 - 💰 **Cost-Optimized** - Operates efficiently within $6-18/month budget
 - 🚀 **Fully Serverless** - Auto-scaling with zero server management
+- 🔄 **週1回の効率的分析** - リアルタイム処理を排除した低コスト・高精度分析サイクル
 
 ## 🏗️ Architecture
 
-```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐    ┌──────────────────┐
-│  External APIs  │────│  Data Collection │────│  Analysis Layer │────│  Presentation    │
-│                 │    │     (Lambda)     │    │   (ECS Fargate) │    │   (React/S3)    │
-├─────────────────┤    ├──────────────────┤    ├─────────────────┤    ├──────────────────┤
-│ • LSEG API      │    │ • Daily Ingestion│    │ • Weekly Batch  │    │ • React Dashboard│
-│ • Reuters API   │    │ • Data Validation│    │ • Claude AI     │    │ • PDF Reports    │
-│ • Bloomberg API │    │ • S3 Storage     │    │ • Statistical   │    │ • CloudFront CDN │
-│ • Economic APIs │    │ • DynamoDB Meta  │    │   Analysis      │    │ • Mobile-First   │
-│ • Weather APIs  │    │ • EventBridge    │    │ • Athena Queries│    │   UI/UX         │
-└─────────────────┘    └──────────────────┘    └─────────────────┘    └──────────────────┘
+```mermaid
+graph TB
+    subgraph "外部データソース / External APIs"
+        LSEG[🔌 LSEG API<br/>Power Market Data]
+        NEWS[📰 News APIs<br/>Reuters, Bloomberg]
+        WEATHER[🌤️ Weather APIs<br/>気象データ]
+        ECONOMIC[📈 Economic APIs<br/>経済指標]
+    end
+
+    subgraph "データ収集層 / Data Collection Layer (Lambda)"
+        LAMBDA1[⚡ Lambda Functions<br/>Daily Data Collection<br/>6:00 AM UTC]
+        S3_RAW[📦 S3 Standard<br/>Raw Data (Parquet)]
+        DDB[🗃️ DynamoDB<br/>Metadata]
+    end
+
+    subgraph "分析層 / Analysis Layer (ECS Fargate)"
+        ECS[🚀 ECS Fargate<br/>Weekly Analysis<br/>Sunday 2:00 AM UTC<br/>15-30分実行]
+        CLAUDE[🤖 Claude 3.5 Sonnet<br/>AI Analysis & Insights]
+    end
+
+    subgraph "表示・配信層 / Presentation Layer"
+        REACT[💻 React Dashboard<br/>TypeScript + Chart.js]
+        S3_WEB[🌐 S3 + CloudFront<br/>Web Hosting]
+        PDF[📄 PDF Reports<br/>Automated Generation]
+        ATHENA[🔍 Athena<br/>SQL Queries]
+    end
+
+    LSEG --> LAMBDA1
+    NEWS --> LAMBDA1
+    WEATHER --> LAMBDA1
+    ECONOMIC --> LAMBDA1
+    LAMBDA1 --> S3_RAW
+    LAMBDA1 --> DDB
+    S3_RAW --> ECS
+    DDB --> ECS
+    ECS --> CLAUDE
+    CLAUDE --> PDF
+    ECS --> ATHENA
+    ATHENA --> REACT
+    REACT --> S3_WEB
 ```
 
 ## 🚀 Quick Start
@@ -51,8 +91,8 @@ NEXUS_ENA is a next-generation energy market data analysis platform that combine
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/nexus-ena.git
-cd nexus-ena
+git clone https://github.com/hozaki45/NEXUS_ENA.git
+cd NEXUS_ENA
 
 # Configure Terraform variables
 cp terraform/terraform.tfvars.example terraform/terraform.tfvars
@@ -126,37 +166,6 @@ ENVIRONMENT=prod
 
 # React Environment Variables
 REACT_APP_API_URL=https://your-api-gateway-url.amazonaws.com
-```
-
-## 🔧 Development
-
-### Local Development Setup
-
-```bash
-# Backend API (using LocalStack)
-docker run -d -p 4566:4566 localstack/localstack
-export AWS_ENDPOINT_URL=http://localhost:4566
-
-# Frontend Development Server
-cd frontend
-npm start
-# Visit http://localhost:3000
-```
-
-### Testing
-
-```bash
-# Python Lambda Tests
-cd lambda/data_collector
-python -m pytest tests/
-
-# React Component Tests
-cd frontend
-npm test
-
-# Infrastructure Tests
-cd terraform
-terraform plan -var-file="test.tfvars"
 ```
 
 ## 💰 Cost Analysis
@@ -308,7 +317,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **📧 Email**: support@nexus-ena.com
 - **📚 Documentation**: [docs.nexus-ena.com](https://docs.nexus-ena.com)
-- **🐛 Issues**: [GitHub Issues](https://github.com/yourusername/nexus-ena/issues)
+- **🐛 Issues**: [GitHub Issues](https://github.com/hozaki45/NEXUS_ENA/issues)
 - **💬 Discord**: [Community Server](https://discord.gg/nexus-ena)
 
 ## 🏆 Acknowledgments

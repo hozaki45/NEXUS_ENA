@@ -38,28 +38,28 @@ NEXUS_ENA is a next-generation energy market data analysis platform that combine
 ```mermaid
 graph TB
     subgraph "外部データソース / External APIs"
-        LSEG[🔌 LSEG API<br/>Power Market Data]
-        NEWS[📰 News APIs<br/>Reuters, Bloomberg]
-        WEATHER[🌤️ Weather APIs<br/>気象データ]
-        ECONOMIC[📈 Economic APIs<br/>経済指標]
+        LSEG["🔌 LSEG API<br/>Power Market Data"]
+        NEWS["📰 News APIs<br/>Reuters, Bloomberg"]
+        WEATHER["🌤️ Weather APIs<br/>気象データ"]
+        ECONOMIC["📈 Economic APIs<br/>経済指標"]
     end
 
     subgraph "データ収集層 / Data Collection Layer (Lambda)"
-        LAMBDA1[⚡ Lambda Functions<br/>Daily Data Collection<br/>6:00 AM UTC]
-        S3_RAW[📦 S3 Standard<br/>Raw Data (Parquet)]
-        DDB[🗃️ DynamoDB<br/>Metadata]
+        LAMBDA1["⚡ Lambda Functions<br/>Daily Data Collection<br/>6:00 AM UTC"]
+        S3_RAW["📦 S3 Standard<br/>Raw Data (Parquet)"]
+        DDB["🗃️ DynamoDB<br/>Metadata"]
     end
 
     subgraph "分析層 / Analysis Layer (ECS Fargate)"
-        ECS[🚀 ECS Fargate<br/>Weekly Analysis<br/>Sunday 2:00 AM UTC<br/>15-30分実行]
-        CLAUDE[🤖 Claude 3.5 Sonnet<br/>AI Analysis & Insights]
+        ECS["🚀 ECS Fargate<br/>Weekly Analysis<br/>Sunday 2:00 AM UTC<br/>15-30分実行"]
+        CLAUDE["🤖 Claude 3.5 Sonnet<br/>AI Analysis & Insights"]
     end
 
     subgraph "表示・配信層 / Presentation Layer"
-        REACT[💻 React Dashboard<br/>TypeScript + Chart.js]
-        S3_WEB[🌐 S3 + CloudFront<br/>Web Hosting]
-        PDF[📄 PDF Reports<br/>Automated Generation]
-        ATHENA[🔍 Athena<br/>SQL Queries]
+        REACT["💻 React Dashboard<br/>TypeScript + Chart.js"]
+        S3_WEB["🌐 S3 + CloudFront<br/>Web Hosting"]
+        PDF["📄 PDF Reports<br/>Automated Generation"]
+        ATHENA["🔍 Athena<br/>SQL Queries"]
     end
 
     LSEG --> LAMBDA1

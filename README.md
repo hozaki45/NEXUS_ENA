@@ -37,15 +37,15 @@ NEXUS_ENA is a next-generation energy market data analysis platform that combine
 
 ```mermaid
 graph TB
-    subgraph "外部データソース / External APIs"
-        LSEG["🔌 LSEG API<br/>Power Market Data"]
+    subgraph "外部データソース / External Data Sources"
+        LSEG["🔌 LSEG SFTP<br/>Power Market Data Files"]
         NEWS["📰 News APIs<br/>Reuters, Bloomberg"]
         WEATHER["🌤️ Weather APIs<br/>気象データ"]
         ECONOMIC["📈 Economic APIs<br/>経済指標"]
     end
 
-    subgraph "データ収集層 / Data Collection Layer (Lambda)"
-        LAMBDA1["⚡ Lambda Functions<br/>Daily Data Collection<br/>6:00 AM UTC"]
+    subgraph "データ収集層 / Data Collection Layer (ECS Fargate)"
+        ECS_COLLECT["🚀 ECS Fargate Task<br/>Daily SFTP Collection<br/>6:00 AM UTC<br/>VPC + SSH Auth"]
         S3_RAW["📦 S3 Standard<br/>Raw Data (Parquet)"]
         DDB["🗃️ DynamoDB<br/>Metadata"]
     end
@@ -62,12 +62,12 @@ graph TB
         ATHENA["🔍 Athena<br/>SQL Queries"]
     end
 
-    LSEG --> LAMBDA1
-    NEWS --> LAMBDA1
-    WEATHER --> LAMBDA1
-    ECONOMIC --> LAMBDA1
-    LAMBDA1 --> S3_RAW
-    LAMBDA1 --> DDB
+    LSEG --> ECS_COLLECT
+    NEWS --> ECS_COLLECT
+    WEATHER --> ECS_COLLECT
+    ECONOMIC --> ECS_COLLECT
+    ECS_COLLECT --> S3_RAW
+    ECS_COLLECT --> DDB
     S3_RAW --> ECS
     DDB --> ECS
     ECS --> CLAUDE

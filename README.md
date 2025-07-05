@@ -28,6 +28,7 @@ NEXUS_ENA is a next-generation energy market data analysis platform that combine
 - 📊 **Real-time Data Collection** - Automated daily collection from LSEG, weather APIs, and economic indicators
 - 🤖 **AI-Powered Analysis** - Weekly insights generated using Claude 3.5 Sonnet
 - 📈 **Interactive Dashboard** - React-based visualization with real-time charts
+- 📰 **News Intelligence** - Automated energy/power news collection and AI-powered weekly reports
 - 🛡️ **Enterprise Security** - WAF protection, encryption, and audit logging
 - 💰 **Cost-Optimized** - Operates efficiently within $6-18/month budget
 - 🚀 **Fully Serverless** - Auto-scaling with zero server management
@@ -208,7 +209,8 @@ REACT_APP_API_URL=https://your-api-gateway-url.amazonaws.com
 | **LSEG** | Power market prices, demand/supply | Daily | Medium |
 | **Weather APIs** | Temperature, wind, precipitation | Daily | Low |
 | **Economic APIs** | Commodity prices, indicators | Daily | Low |
-| **Reuters** | News sentiment analysis | Optional | Medium |
+| **News APIs** | Energy/power news collection | 6 hours | Low |
+| **Reuters** | Financial news sentiment analysis | Daily | Medium |
 | **Bloomberg** | Advanced financial data | Optional | High |
 
 ## 🤖 AI Analysis
@@ -220,6 +222,7 @@ The platform leverages **Claude 3.5 Sonnet** for:
 - **📈 Market Trend Analysis** - Pattern recognition in price movements
 - **🌡️ Weather Impact Assessment** - Correlation analysis with energy demand
 - **💹 Economic Factor Analysis** - Macro-economic influence on energy markets
+- **📰 News Intelligence** - Automated news collection, sentiment analysis, and weekly summaries
 - **📋 Automated Report Generation** - Weekly PDF reports with insights
 - **🎯 Risk Assessment** - Volatility and market risk evaluation
 
@@ -230,6 +233,7 @@ The platform leverages **Claude 3.5 Sonnet** for:
 • Power prices increased 12% due to extreme weather conditions
 • Renewable generation exceeded forecasts by 18%
 • Natural gas correlation strengthened across all regions
+• Major energy news: 15 articles analyzed with 67% positive sentiment
 • Recommended hedging strategies for volatile periods
 ```
 

@@ -1,10 +1,10 @@
-# NEXUS_ENA - Energy Nexus Analytics Platform
+# NEXUS_ENA - エネルギー・ネクサス・アナリティクス・プラットフォーム
 
 <div align="center">
 
 ![NEXUS Logo](https://img.shields.io/badge/NEXUS_ENA-Energy%20Analytics-blue?style=for-the-badge&logo=lightning)
 
-**🚀 Enterprise-grade energy market data analysis platform built on AWS Serverless Architecture**
+**🚀 AWSサーバーレス・アーキテクチャ上に構築されたエンタープライズ・グレードのエネルギー市場データ分析プラットフォーム**
 
 [![AWS](https://img.shields.io/badge/AWS-Serverless-orange.svg)](https://aws.amazon.com/)
 [![React](https://img.shields.io/badge/React-18.x-blue.svg)](https://reactjs.org/)
@@ -17,23 +17,23 @@
 
 </div>
 
-## 🌟 Overview
+## 🌟 概要
 
-NEXUS_ENA is a next-generation energy market data analysis platform that combines real-time data collection, AI-powered analysis, and intuitive visualization. Built entirely on AWS serverless technologies, it delivers enterprise-grade capabilities while operating under strict cost constraints ($20/month).
+NEXUS_ENAは、リアルタイムデータ収集、AI駆動分析、直感的な可視化を組み合わせた次世代エネルギー市場データ分析プラットフォームです。完全にAWSサーバーレス技術上に構築され、厳格なコスト制約（月額20ドル）のもとでエンタープライズ・グレードの機能を提供します。
 
 電力市場における原料取引データ（現物・先物）を自動収集・分析し、Claude AIを活用したニュース分析とレポート生成により、エネルギーアナリストの戦略立案を支援します。
 
-### ✨ Key Features
+### ✨ 主な特徴
 
-- 📊 **Real-time Data Collection** - Automated daily collection from LSEG, weather APIs, and economic indicators
-- 🤖 **AI-Powered Analysis** - Weekly insights generated using Claude 3.5 Sonnet
-- 📈 **Interactive Dashboard** - React-based visualization with real-time charts
-- 🛡️ **Enterprise Security** - WAF protection, encryption, and audit logging
-- 💰 **Cost-Optimized** - Operates efficiently within $6-18/month budget
-- 🚀 **Fully Serverless** - Auto-scaling with zero server management
+- 📊 **リアルタイムデータ収集** - LSEG、気象API、経済指標からの自動日次収集
+- 🤖 **AI駆動分析** - Claude 3.5 Sonnetを使用した週次インサイト生成
+- 📈 **インタラクティブダッシュボード** - リアルタイムチャート付きReactベース可視化
+- 🛡️ **エンタープライズセキュリティ** - WAF保護、暗号化、監査ログ
+- 💰 **コスト最適化** - 月額6-18ドル予算内での効率的運用
+- 🚀 **完全サーバーレス** - サーバー管理不要の自動スケーリング
 - 🔄 **週1回の効率的分析** - リアルタイム処理を排除した低コスト・高精度分析サイクル
 
-## 🏗️ Architecture
+## 🏗️ アーキテクチャ
 
 ```mermaid
 graph TB
@@ -77,54 +77,54 @@ graph TB
     REACT --> S3_WEB
 ```
 
-## 🚀 Quick Start
+## 🚀 クイックスタート
 
-### Prerequisites
+### 前提条件
 
-- AWS CLI configured with appropriate permissions
+- 適切な権限で設定されたAWS CLI
 - Terraform 1.6+
 - Node.js 18+
 - Python 3.9+
-- Docker (for ECS containers)
+- Docker（ECSコンテナ用）
 
-### 1. Infrastructure Deployment
+### 1. インフラストラクチャの展開
 
 ```bash
-# Clone the repository
+# リポジトリのクローン
 git clone https://github.com/hozaki45/NEXUS_ENA.git
 cd NEXUS_ENA
 
-# Configure Terraform variables
+# Terraform変数の設定
 cp terraform/terraform.tfvars.example terraform/terraform.tfvars
-# Edit terraform.tfvars with your API keys and preferences
+# APIキーと設定でterraform.tfvarsを編集
 
-# Deploy infrastructure
+# インフラストラクチャの展開
 cd terraform
 terraform init
 terraform plan
 terraform apply
 ```
 
-### 2. Lambda Functions Deployment
+### 2. Lambda関数の展開
 
 ```bash
-# Package and deploy data collector
+# データコレクターのパッケージ化と展開
 cd lambda/data_collector
 pip install -r requirements.txt -t .
 zip -r data_collector.zip .
 aws lambda update-function-code --function-name nexus-ena-data-collector-prod --zip-file fileb://data_collector.zip
 
-# Package and deploy API handler
+# APIハンドラーのパッケージ化と展開
 cd ../api_handler
 pip install -r requirements.txt -t .
 zip -r api_handler.zip .
 aws lambda update-function-code --function-name nexus-ena-api-handler-prod --zip-file fileb://api_handler.zip
 ```
 
-### 3. ECS Container Deployment
+### 3. ECSコンテナの展開
 
 ```bash
-# Build and push analysis container
+# 分析コンテナのビルドとプッシュ
 cd ecs/analysis
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <account-id>.dkr.ecr.us-east-1.amazonaws.com
 docker build -t nexus-ena-analysis .
@@ -132,203 +132,203 @@ docker tag nexus-ena-analysis:latest <account-id>.dkr.ecr.us-east-1.amazonaws.co
 docker push <account-id>.dkr.ecr.us-east-1.amazonaws.com/nexus-ena-analysis:latest
 ```
 
-### 4. Frontend Deployment
+### 4. フロントエンドの展開
 
 ```bash
-# Build React application
+# Reactアプリケーションのビルド
 cd frontend
 npm install
 npm run build
 
-# Deploy to S3
+# S3への展開
 aws s3 sync build/ s3://nexus-ena-web-prod
 aws cloudfront create-invalidation --distribution-id <distribution-id> --paths "/*"
 ```
 
-## 📋 Configuration
+## 📋 設定
 
-### Required API Keys
+### 必要なAPIキー
 
-Set these in AWS Systems Manager Parameter Store:
+以下をAWS Systems Manager Parameter Storeに設定してください：
 
-- `/nexus-ena/claude-api-key` - Claude AI API key
-- `/nexus-ena/lseg-api-key` - LSEG market data API key
-- `/nexus-ena/weather-api-key` - Weather service API key (optional)
-- `/nexus-ena/economic-api-key` - Economic data API key (optional)
+- `/nexus-ena/claude-api-key` - Claude AI APIキー
+- `/nexus-ena/lseg-api-key` - LSEG市場データAPIキー
+- `/nexus-ena/weather-api-key` - 気象サービスAPIキー（オプション）
+- `/nexus-ena/economic-api-key` - 経済データAPIキー（オプション）
 
-### Environment Variables
+### 環境変数
 
 ```bash
-# Lambda Environment Variables
+# Lambda環境変数
 S3_BUCKET=nexus-ena-data-lake-prod
 DYNAMODB_TABLE=nexus-ena-metadata-prod
 ENVIRONMENT=prod
 
-# React Environment Variables
+# React環境変数
 REACT_APP_API_URL=https://your-api-gateway-url.amazonaws.com
 ```
 
-## 💰 Cost Analysis
+## 💰 コスト分析
 
-| Configuration | Monthly Cost | Features |
-|---------------|--------------|-----------|
-| **Development** | $4.50 | Basic monitoring, single region |
-| **Production** | $9.00 | Enhanced security, cross-region backup |
-| **Enterprise** | $17.50 | Full compliance, advanced monitoring |
+| 構成 | 月額費用 | 機能 |
+|------|----------|------|
+| **開発環境** | $4.50 | 基本監視、単一リージョン |
+| **本番環境** | $9.00 | 強化セキュリティ、リージョン間バックアップ |
+| **エンタープライズ** | $17.50 | 完全コンプライアンス、高度監視 |
 
-### Cost Breakdown
-- **Compute (Lambda + ECS)**: $0.60/month
-- **Storage (S3 + DynamoDB)**: $1.46/month  
-- **Security (WAF + Monitoring)**: $2.51/month
-- **Networking (CloudFront + Data Transfer)**: $1.35/month
+### コスト内訳
+- **コンピューティング（Lambda + ECS）**: $0.60/月
+- **ストレージ（S3 + DynamoDB）**: $1.46/月  
+- **セキュリティ（WAF + 監視）**: $2.51/月
+- **ネットワーク（CloudFront + データ転送）**: $1.35/月
 
-## 🛡️ Security
+## 🛡️ セキュリティ
 
-### Security Features
+### セキュリティ機能
 
-- **🔐 Authentication**: AWS Cognito with JWT tokens
-- **🛡️ Web Application Firewall**: AWS WAF with custom rules
-- **🔒 Encryption**: AES-256 at rest, TLS 1.2+ in transit
-- **📝 Audit Logging**: CloudTrail for all API calls
-- **🎯 Access Control**: IAM roles with least privilege
-- **🔍 Monitoring**: CloudWatch alarms and dashboards
+- **🔐 認証**: JWTトークン付きAWS Cognito
+- **🛡️ Webアプリケーションファイアウォール**: カスタムルール付きAWS WAF
+- **🔒 暗号化**: 保存時AES-256、転送時TLS 1.2+
+- **📝 監査ログ**: すべてのAPI呼び出しに対するCloudTrail
+- **🎯 アクセス制御**: 最小権限原則のIAMロール
+- **🔍 監視**: CloudWatchアラームとダッシュボード
 
-### Compliance
+### コンプライアンス
 
-- **SOC 2 Type II** framework alignment
-- **GDPR** data protection compliance
-- **Financial Services** security standards
+- **SOC 2 Type II** フレームワーク準拠
+- **GDPR** データ保護コンプライアンス
+- **金融サービス** セキュリティ基準
 
-## 📊 Data Sources
+## 📊 データソース
 
-### Supported APIs
+### サポートされるAPI
 
-| Source | Data Type | Frequency | Cost Impact |
-|--------|-----------|-----------|-------------|
-| **LSEG** | Power market prices, demand/supply | Daily | Medium |
-| **Weather APIs** | Temperature, wind, precipitation | Daily | Low |
-| **Economic APIs** | Commodity prices, indicators | Daily | Low |
-| **Reuters** | News sentiment analysis | Optional | Medium |
-| **Bloomberg** | Advanced financial data | Optional | High |
+| ソース | データ型 | 頻度 | コスト影響 |
+|--------|----------|------|------------|
+| **LSEG** | 電力市場価格、需給 | 日次 | 中程度 |
+| **気象API** | 気温、風力、降水量 | 日次 | 低い |
+| **経済API** | 商品価格、指標 | 日次 | 低い |
+| **Reuters** | ニュース感情分析 | オプション | 中程度 |
+| **Bloomberg** | 高度な金融データ | オプション | 高い |
 
-## 🤖 AI Analysis
+## 🤖 AI分析
 
-### Claude AI Integration
+### Claude AI統合
 
-The platform leverages **Claude 3.5 Sonnet** for:
+プラットフォームは以下のために **Claude 3.5 Sonnet** を活用します：
 
-- **📈 Market Trend Analysis** - Pattern recognition in price movements
-- **🌡️ Weather Impact Assessment** - Correlation analysis with energy demand
-- **💹 Economic Factor Analysis** - Macro-economic influence on energy markets
-- **📋 Automated Report Generation** - Weekly PDF reports with insights
-- **🎯 Risk Assessment** - Volatility and market risk evaluation
+- **📈 市場トレンド分析** - 価格変動のパターン認識
+- **🌡️ 気象影響評価** - エネルギー需要との相関分析
+- **💹 経済要因分析** - エネルギー市場におけるマクロ経済の影響
+- **📋 自動レポート生成** - インサイト付き週次PDFレポート
+- **🎯 リスク評価** - ボラティリティと市場リスクの評価
 
-### Sample AI Insights
+### AI分析サンプル
 
 ```
-🔍 Weekly Analysis Summary:
-• Power prices increased 12% due to extreme weather conditions
-• Renewable generation exceeded forecasts by 18%
-• Natural gas correlation strengthened across all regions
-• Recommended hedging strategies for volatile periods
+🔍 週次分析サマリー：
+• 極端な気象条件により電力価格が12%上昇
+• 再生可能エネルギー発電が予想を18%上回る
+• 全地域で天然ガスの相関関係が強化
+• 不安定な期間のヘッジ戦略を推奨
 ```
 
-## 📈 Monitoring & Alerts
+## 📈 監視とアラート
 
-### Key Metrics
+### 主要指標
 
-- **Data Collection Success Rate**: >99.5% target
-- **Analysis Completion Time**: <30 minutes
-- **Dashboard Load Time**: <2 seconds
-- **Monthly Cost**: <$20 threshold
+- **データ収集成功率**: 99.5%以上を目標
+- **分析完了時間**: 30分以内
+- **ダッシュボード読み込み時間**: 2秒以内
+- **月額費用**: 20ドル未満を閾値
 
-### Alert Configuration
+### アラート設定
 
 ```yaml
-Critical Alerts:
-  - Lambda function failures
-  - ECS task failures  
-  - Cost threshold exceeded (>$18/month)
-  - Data corruption detected
+クリティカルアラート:
+  - Lambda関数の失敗
+  - ECSタスクの失敗
+  - コスト閾値超過（月額18ドル以上）
+  - データ破損検出
 
-Warning Alerts:
-  - API rate limits approaching
-  - Storage quota at 80%
-  - Unusual data patterns
+警告アラート:
+  - API制限の近接
+  - ストレージ容量80%達成
+  - 異常なデータパターン
 ```
 
-## 🔄 Data Pipeline
+## 🔄 データパイプライン
 
-### Processing Flow
+### 処理フロー
 
-1. **📥 Daily Collection** (6:00 AM UTC)
-   - Lambda triggers data collection from APIs
-   - Data validation and transformation
-   - Storage in S3 (Parquet format)
-   - Metadata updates in DynamoDB
+1. **📥 日次収集**（6:00 AM UTC）
+   - LambdaがAPIからデータ収集を開始
+   - データ検証と変換
+   - S3にParquet形式で保存
+   - DynamoDBのメタデータ更新
 
-2. **🧠 Weekly Analysis** (Sunday 2:00 AM UTC)
-   - ECS Fargate task processes accumulated data
-   - Claude AI generates insights and analysis
-   - PDF reports created and stored
-   - Dashboard data updated
+2. **🧠 週次分析**（日曜日 2:00 AM UTC）
+   - ECS Fargateタスクが蓄積データを処理
+   - Claude AIがインサイトと分析を生成
+   - PDFレポートの作成と保存
+   - ダッシュボードデータの更新
 
-3. **📊 Real-time Visualization**
-   - React dashboard polls API every 5 minutes
-   - Charts update with latest data
-   - User notifications for important events
+3. **📊 リアルタイム可視化**
+   - ReactダッシュボードがAPI を5分ごとにポーリング
+   - 最新データでチャートを更新
+   - 重要イベントのユーザー通知
 
-## 🛠️ Maintenance
+## 🛠️ メンテナンス
 
-### Regular Tasks
+### 定期タスク
 
-- **Daily**: Monitor cost and usage metrics
-- **Weekly**: Review analysis reports and insights
-- **Monthly**: Security patch updates and dependency reviews
-- **Quarterly**: Architecture review and optimization
+- **日次**: コストと使用量メトリクスの監視
+- **週次**: 分析レポートとインサイトのレビュー
+- **月次**: セキュリティパッチ更新と依存関係レビュー
+- **四半期**: アーキテクチャレビューと最適化
 
-### Backup & Recovery
+### バックアップと復旧
 
-- **RTO**: 4 hours (Recovery Time Objective)
-- **RPO**: 24 hours (Recovery Point Objective)
-- **Multi-region**: Automatic failover to us-west-2
-- **Data Retention**: 7 years with lifecycle management
+- **RTO**: 4時間（復旧時間目標）
+- **RPO**: 24時間（復旧ポイント目標）
+- **マルチリージョン**: us-west-2への自動フェイルオーバー
+- **データ保持**: ライフサイクル管理付き7年間
 
-## 🤝 Contributing
+## 🤝 コントリビューション
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. リポジトリをフォーク
+2. 機能ブランチを作成（`git checkout -b feature/amazing-feature`）
+3. 変更をコミット（`git commit -m 'Add amazing feature'`）
+4. ブランチにプッシュ（`git push origin feature/amazing-feature`）
+5. プルリクエストを作成
 
-### Development Guidelines
+### 開発ガイドライン
 
-- Follow TypeScript and Python coding standards
-- Add tests for new functionality
-- Update documentation for API changes
-- Ensure security best practices
+- TypeScriptとPythonのコーディング標準に従う
+- 新機能にテストを追加
+- API変更についてドキュメントを更新
+- セキュリティベストプラクティスを確保
 
-## 📄 License
+## 📄 ライセンス
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+このプロジェクトはMITライセンスの下でライセンスされています - 詳細は[LICENSE](LICENSE)ファイルを参照してください。
 
-## 🆘 Support
+## 🆘 サポート
 
-- **📧 Email**: support@nexus-ena.com
-- **📚 Documentation**: [docs.nexus-ena.com](https://docs.nexus-ena.com)
-- **🐛 Issues**: [GitHub Issues](https://github.com/hozaki45/NEXUS_ENA/issues)
-- **💬 Discord**: [Community Server](https://discord.gg/nexus-ena)
+- **📧 メール**: support@nexus-ena.com
+- **📚 ドキュメント**: [docs.nexus-ena.com](https://docs.nexus-ena.com)
+- **🐛 課題**: [GitHub Issues](https://github.com/hozaki45/NEXUS_ENA/issues)
+- **💬 Discord**: [コミュニティサーバー](https://discord.gg/nexus-ena)
 
-## 🏆 Acknowledgments
+## 🏆 謝辞
 
-- **AWS** for serverless platform capabilities
-- **Anthropic** for Claude AI integration
-- **Energy Market Data Providers** for comprehensive data access
-- **Open Source Community** for foundational libraries and tools
+- **AWS** - サーバーレスプラットフォーム機能
+- **Anthropic** - Claude AI統合
+- **エネルギー市場データプロバイダー** - 包括的なデータアクセス
+- **オープンソースコミュニティ** - 基盤ライブラリとツール
 
 ---
 
-**Built with ❤️ for the Energy Industry**
+**エネルギー業界のために❤️で構築**
 
-*Empowering data-driven decisions in energy markets through advanced analytics and AI-powered insights.*
+*高度な分析とAI駆動インサイトにより、エネルギー市場でのデータ駆動意思決定を支援します。*

@@ -28,6 +28,7 @@ NEXUS_ENAは、リアルタイムデータ収集、AI駆動分析、直感的な
 - 📊 **リアルタイムデータ収集** - LSEG、気象API、経済指標からの自動日次収集
 - 🤖 **AI駆動分析** - Claude 3.5 Sonnetを使用した週次インサイト生成
 - 📈 **インタラクティブダッシュボード** - リアルタイムチャート付きReactベース可視化
+- 📰 **ニュース・インテリジェンス** - 自動エネルギー/電力ニュース収集とAI駆動週次レポート
 - 🛡️ **エンタープライズセキュリティ** - WAF保護、暗号化、監査ログ
 - 💰 **コスト最適化** - 月額6-18ドル予算内での効率的運用
 - 🚀 **完全サーバーレス** - サーバー管理不要の自動スケーリング
@@ -37,15 +38,15 @@ NEXUS_ENAは、リアルタイムデータ収集、AI駆動分析、直感的な
 
 ```mermaid
 graph TB
-    subgraph "外部データソース / External APIs"
-        LSEG["🔌 LSEG API<br/>Power Market Data"]
+    subgraph "外部データソース / External Data Sources"
+        LSEG["🔌 LSEG SFTP<br/>Power Market Data Files"]
         NEWS["📰 News APIs<br/>Reuters, Bloomberg"]
         WEATHER["🌤️ Weather APIs<br/>気象データ"]
         ECONOMIC["📈 Economic APIs<br/>経済指標"]
     end
 
-    subgraph "データ収集層 / Data Collection Layer (Lambda)"
-        LAMBDA1["⚡ Lambda Functions<br/>Daily Data Collection<br/>6:00 AM UTC"]
+    subgraph "データ収集層 / Data Collection Layer (ECS Fargate)"
+        ECS_COLLECT["🚀 ECS Fargate Task<br/>Daily SFTP Collection<br/>6:00 AM UTC<br/>VPC + SSH Auth"]
         S3_RAW["📦 S3 Standard<br/>Raw Data (Parquet)"]
         DDB["🗃️ DynamoDB<br/>Metadata"]
     end
@@ -62,12 +63,12 @@ graph TB
         ATHENA["🔍 Athena<br/>SQL Queries"]
     end
 
-    LSEG --> LAMBDA1
-    NEWS --> LAMBDA1
-    WEATHER --> LAMBDA1
-    ECONOMIC --> LAMBDA1
-    LAMBDA1 --> S3_RAW
-    LAMBDA1 --> DDB
+    LSEG --> ECS_COLLECT
+    NEWS --> ECS_COLLECT
+    WEATHER --> ECS_COLLECT
+    ECONOMIC --> ECS_COLLECT
+    ECS_COLLECT --> S3_RAW
+    ECS_COLLECT --> DDB
     S3_RAW --> ECS
     DDB --> ECS
     ECS --> CLAUDE
@@ -208,7 +209,8 @@ REACT_APP_API_URL=https://your-api-gateway-url.amazonaws.com
 | **LSEG** | 電力市場価格、需給 | 日次 | 中程度 |
 | **気象API** | 気温、風力、降水量 | 日次 | 低い |
 | **経済API** | 商品価格、指標 | 日次 | 低い |
-| **Reuters** | ニュース感情分析 | オプション | 中程度 |
+| **ニュースAPI** | エネルギー/電力ニュース収集 | 6時間 | 低い |
+| **Reuters** | 金融ニュース感情分析 | 日次 | 中程度 |
 | **Bloomberg** | 高度な金融データ | オプション | 高い |
 
 ## 🤖 AI分析
@@ -220,6 +222,7 @@ REACT_APP_API_URL=https://your-api-gateway-url.amazonaws.com
 - **📈 市場トレンド分析** - 価格変動のパターン認識
 - **🌡️ 気象影響評価** - エネルギー需要との相関分析
 - **💹 経済要因分析** - エネルギー市場におけるマクロ経済の影響
+- **📰 ニュース・インテリジェンス** - 自動ニュース収集、感情分析、週次サマリー
 - **📋 自動レポート生成** - インサイト付き週次PDFレポート
 - **🎯 リスク評価** - ボラティリティと市場リスクの評価
 
@@ -230,6 +233,7 @@ REACT_APP_API_URL=https://your-api-gateway-url.amazonaws.com
 • 極端な気象条件により電力価格が12%上昇
 • 再生可能エネルギー発電が予想を18%上回る
 • 全地域で天然ガスの相関関係が強化
+• 主要エネルギーニュース：15記事を分析し、67%がポジティブな感情
 • 不安定な期間のヘッジ戦略を推奨
 ```
 

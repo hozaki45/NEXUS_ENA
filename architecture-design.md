@@ -8,31 +8,41 @@ NEXUS_ENA is a cost-optimized energy market data analysis platform built on AWS 
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐    ┌──────────────────┐
-│  External APIs  │────│  Data Collection │────│  Analysis Layer │────│  Presentation    │
-│                 │    │     (Lambda)     │    │   (ECS Fargate) │    │   (React/S3)    │
+│  External Data  │────│  Data Collection │────│  Analysis Layer │────│  Presentation    │
+│                 │    │   (ECS Fargate)  │    │   (ECS Fargate) │    │   (React/S3)    │
 ├─────────────────┤    ├──────────────────┤    ├─────────────────┤    ├──────────────────┤
-│ • LSEG API      │    │ • Daily Ingestion│    │ • Weekly Batch  │    │ • React Dashboard│
-│ • Reuters API   │    │ • Data Validation│    │ • Claude AI     │    │ • PDF Reports    │
-│ • Bloomberg API │    │ • S3 Storage     │    │ • Statistical   │    │ • CloudFront CDN │
-│ • Economic APIs │    │ • DynamoDB Meta  │    │   Analysis      │    │ • Mobile-First   │
-│ • Weather APIs  │    │ • EventBridge    │    │ • Athena Queries│    │   UI/UX         │
+│ • LSEG SFTP     │    │ • Daily SFTP     │    │ • Weekly Batch  │    │ • React Dashboard│
+│ • Reuters API   │    │ • File Download  │    │ • Claude AI     │    │ • PDF Reports    │
+│ • Bloomberg API │    │ • Data Validation│    │ • Statistical   │    │ • CloudFront CDN │
+│ • Economic APIs │    │ • S3 Storage     │    │   Analysis      │    │ • Mobile-First   │
+│ • Weather APIs  │    │ • DynamoDB Meta  │    │ • Athena Queries│    │   UI/UX         │
 └─────────────────┘    └──────────────────┘    └─────────────────┘    └──────────────────┘
+                                ↑
+                        ┌──────────────┐
+                        │     VPC      │
+                        │ SSH Key Mgmt │
+                        │  Security    │
+                        └──────────────┘
 ```
 
 ### Core Components
 
-#### 1. Data Collection Layer (AWS Lambda)
-- **Function**: `nexus-data-collector`
-- **Runtime**: Python 3.9
+#### 1. Data Collection Layer (ECS Fargate)
+- **Task**: `nexus-lseg-data-collector`
+- **Image**: Custom Python container with SFTP client
+- **vCPU**: 0.25 (256 CPU units)
+- **Memory**: 0.5GB
 - **Trigger**: EventBridge (daily 6:00 AM UTC)
-- **Memory**: 512MB
-- **Timeout**: 5 minutes
+- **Duration**: 10-15 minutes
+- **Network**: VPC with private subnets
 - **Responsibilities**:
-  - API authentication & rate limiting
-  - Data ingestion from external sources
-  - Data validation & transformation
-  - S3 storage (Parquet format)
+  - SFTP connection to LSEG servers
+  - SSH key-based authentication
+  - Secure file download and validation
+  - Data transformation (CSV → Parquet)
+  - S3 storage with encryption
   - DynamoDB metadata updates
+  - Connection cleanup and logging
 
 #### 2. Analysis Layer (ECS Fargate)
 - **Task**: `nexus-weekly-analysis`
@@ -83,7 +93,7 @@ S3 Bucket: nexus-ena-data/
 
 1. **Daily Collection Cycle**:
    ```
-   EventBridge → Lambda → External APIs → S3 (Raw) → DynamoDB (Metadata)
+   EventBridge → ECS Task → LSEG SFTP → File Download → S3 (Raw) → DynamoDB (Metadata)
    ```
 
 2. **Weekly Analysis Cycle**:
@@ -99,16 +109,17 @@ S3 Bucket: nexus-ena-data/
 ### Scalability & Performance
 
 #### Auto-scaling Configuration
-- **Lambda**: Concurrent executions: 10 (cost optimization)
-- **ECS**: Single task (sufficient for weekly processing)
+- **ECS Data Collection**: Single task instance (sufficient for daily SFTP)
+- **ECS Analysis**: Single task (sufficient for weekly processing)
 - **API Gateway**: Rate limiting: 100 req/min per user
 - **CloudFront**: Global edge caching (24h TTL)
 
 #### Performance Optimizations
 - Parquet columnar storage for efficient querying
 - S3 Transfer Acceleration for large data sets
-- Lambda provisioned concurrency disabled (cost saving)
 - ECS Spot pricing consideration (90% cost reduction)
+- SFTP connection pooling and file compression
+- VPC Endpoints to reduce data transfer costs
 
 ### Cost Optimization Strategy
 
@@ -118,10 +129,11 @@ Standard (0-30 days) → IA (30-90 days) → Glacier (90-365 days) → Deep Arch
 ```
 
 #### Resource Right-sizing
-- Lambda: 512MB memory (balance of cost/performance)
-- ECS: Minimum viable resources (0.25 vCPU, 0.5GB RAM)
+- ECS Data Collection: Minimum viable resources (0.25 vCPU, 0.5GB RAM)
+- ECS Analysis: Minimum viable resources (0.25 vCPU, 0.5GB RAM)
 - RDS avoided (DynamoDB for metadata only)
 - ElastiCache avoided (S3 caching strategy)
+- NAT Gateway: Single instance with minimal bandwidth
 
 ### Security Architecture
 
@@ -129,12 +141,14 @@ Standard (0-30 days) → IA (30-90 days) → Glacier (90-365 days) → Deep Arch
 - **Frontend**: AWS Cognito User Pools
 - **API**: JWT tokens with API Gateway authorizers
 - **Backend**: IAM roles with least privilege
+- **SFTP Authentication**: SSH key pairs stored in AWS Systems Manager Parameter Store
 - **External APIs**: Secure credential storage (Systems Manager)
 
 #### Data Protection
 - **Encryption at Rest**: S3 (AES-256), DynamoDB (KMS)
-- **Encryption in Transit**: TLS 1.2+ all communications
-- **Network Security**: VPC endpoints, Security Groups
+- **Encryption in Transit**: TLS 1.2+ all communications, SFTP over SSH
+- **Network Security**: VPC with private subnets, NAT Gateway, Security Groups
+- **SFTP Security**: SSH key rotation, connection monitoring, IP whitelisting
 - **WAF**: DDoS protection, SQL injection prevention
 
 #### Compliance & Monitoring
